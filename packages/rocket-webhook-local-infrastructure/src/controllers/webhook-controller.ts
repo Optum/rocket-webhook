@@ -32,9 +32,22 @@ export class WebhookController {
         this.setHeaders(response, res)
         const type = response?.headers['Content-type']
         if (type === WebhookResponseType.file) {
-          const readStream = new stream.PassThrough()
-          readStream.end(response.body)
-          readStream.pipe(res)
+          // Handle file responses with streaming support
+          if (this.isReadableStream(body)) {
+            ;(body as NodeJS.ReadableStream).pipe(res)
+          } else {
+            // Fallback to Buffer-based responses
+            const readStream = new stream.PassThrough()
+            readStream.end(response.body)
+            readStream.pipe(res)
+          }
+        } else if (type === WebhookResponseType.stream) {
+          // Handle stream responses
+          if (this.isReadableStream(body)) {
+            ;(body as NodeJS.ReadableStream).pipe(res)
+          } else {
+            res.send(body)
+          }
         } else if (type === WebhookResponseType.json) {
           res.json(body)
         } else {
@@ -58,5 +71,10 @@ export class WebhookController {
 
   private isSuccess(response: WebhookAPIResult): response is WebhookAPISuccessResult {
     return (response as WebhookAPISuccessResult).status === HttpSuccessStatusCode
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private isReadableStream(obj: any): obj is NodeJS.ReadableStream {
+    return obj && typeof obj.pipe === 'function' && typeof obj.read === 'function'
   }
 }

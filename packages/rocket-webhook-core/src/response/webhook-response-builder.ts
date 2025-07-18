@@ -3,6 +3,7 @@ import { WebhookFileResponse } from './responses/webhook-file-response'
 import { WebhookJsonResponse } from './responses/webhook-json-response'
 import { WebhookTextResponse } from './responses/webhook-text-response'
 import { WebhookEmptyResponse } from './responses/webhook-empty-response'
+import { WebhookStreamResponse } from './responses/webhook-stream-response'
 
 export interface WebhookResponseClass {
   getBody(response?: WebhookHandlerReturnType): unknown
@@ -30,6 +31,9 @@ export class WebhookResponseBuilder {
         return
       case WebhookResponseType.text:
         this.webhookBaseResponse = new WebhookTextResponse()
+        return
+      case WebhookResponseType.stream:
+        this.webhookBaseResponse = new WebhookStreamResponse()
         return
       default:
         console.log('Unexpected response type. Using File')

@@ -24,10 +24,19 @@ export interface WebhookHandlerFileReturnType extends WebhookHandlerBaseReturnTy
   }
 }
 
+export interface WebhookHandlerStreamReturnType extends WebhookHandlerBaseReturnType {
+  responseType: WebhookResponseType.stream
+  file: {
+    name: string
+    mimeType: string
+  }
+}
+
 export type WebhookHandlerReturnType =
   | WebhookHandlerTextReturnType
   | WebhookHandlerJsonReturnType
   | WebhookHandlerFileReturnType
+  | WebhookHandlerStreamReturnType
 
 export interface WebhookHandlerClassInterface extends Class<unknown> {
   handle(webhookEventInterface: WebhookEvent, register: Register): Promise<WebhookHandlerReturnType | void>

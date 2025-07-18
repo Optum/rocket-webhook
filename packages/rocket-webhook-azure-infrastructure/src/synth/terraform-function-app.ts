@@ -45,6 +45,12 @@ export class TerraformFunctionApp {
         COSMOSDB_CONNECTION_STRING: `AccountEndpoint=https://${cosmosDatabaseName}.documents.azure.com:443/;AccountKey=${cosmosDbConnectionString};`,
         WEBSITE_CONTENTAZUREFILECONNECTIONSTRING: storageAccount.primaryConnectionString,
         [rocketFunctionIDEnvVar]: functionID,
+
+        // Streaming support configuration
+        FUNCTIONS_REQUEST_BODY_SIZE_LIMIT: '104857600', // 100MB DEFAULT
+        WEBSITE_NODE_DEFAULT_VERSION: '~20',
+        FUNCTIONS_WORKER_RUNTIME: 'node',
+        FUNCTIONS_EXTENSION_VERSION: '~4',
       },
       storageAccountName: storageAccount.name,
       storageAccountAccessKey: storageAccount.primaryAccessKey,
@@ -57,6 +63,9 @@ export class TerraformFunctionApp {
         applicationStack: {
           nodeVersion: '~20',
         },
+        // Add streaming configuration
+        http2Enabled: true,
+        minimumTlsVersion: '1.2',
       },
       functionsExtensionVersion: '~4',
     })

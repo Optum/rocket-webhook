@@ -31,7 +31,7 @@ export class WebhookFunction {
           },
         ],
         scriptFile: config.functionRelativePath,
-        entryPoint: config.rocketDispatcherHandler.split('.')[1],
+        entryPoint: 'azureStreamingWrapper',
       },
     }
   }
